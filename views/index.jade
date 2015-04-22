@@ -1,5 +1,10 @@
 extends layout
-
+head
+    title My Site
+    script(src='../socket-client.io.js')
+    script(src='../routes/getApps.js')
 block content
   h1= title
   p Welcome to #{title}
+  p This is data from socket :
+    p#appointments
