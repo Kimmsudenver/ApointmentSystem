@@ -17,7 +17,7 @@
 </head>
 <body>
 <h2>Appointment system</h2>
-<button class="btn btn-primary" id="request">Request socket</button>
+<button class="btn btn-primary" id="request"></button>
 <table class="table table-striped table-bordered">
     <thead>
        <td>Date</td>
@@ -45,26 +45,28 @@
         <td id="we1"></td>
         <td id="we2"></td>
         <td id="we3"></td>
-        <td></td>
+        <td id="we4"></td>
     </tr>
     <tr>
         <td>Thursday</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td id="thu1"></td>
+        <td id="thu2"></td>
+        <td id="thu3"></td>
+        <td id="thu4"></td>
     </tr>
     <tr>
-        <td>Friday</td><td></td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td>Friday</td>
+        <td id="fri1"></td>
+        <td id="fri2"></td>
+        <td id="fri3"></td>
+        <td id="fri4"></td>
     </tr>
 
 </table>
 <script>
         var socket = io.connect('http://localhost:3000');
-
+        console.log(socket)
+        $('#request').text("Socket Id : " + socket.id)
         $('tr td').each(function(){
             var ids = $(this).attr("id")
             if(ids) {
@@ -87,9 +89,12 @@
            //update buttons
             $('tr td').each(function() {
                 var idt = $(this).attr('id')
-                for(item in data){
-                    if(item.id == idt){
-                        $('td#'+data.id).remove('button').addClass("danger").text("Unavailable")
+                //console.log("data : " + JSON.stringify(data) + "id : " + idt)
+                for(item in data.list){
+                  //  console.log(data.list[item].id)
+                    if(data.list[item].id == idt){
+                        console.log("EQUAL here" )
+                        $('td#'+idt).remove('button').addClass("danger").text("Unavailable")
                     }
                 }
             })

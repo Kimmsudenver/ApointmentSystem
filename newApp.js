@@ -1,3 +1,8 @@
+/**
+ * Created by kim on 4/27/15.
+ */
+
+var port = require('./port')
 var express = require('express');
 var path = require('path');
 var when = require('when');
@@ -9,8 +14,6 @@ var bodyParser = require('body-parser');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
-var port = require('./port')
-console.log("GLOBAL PORT : " + port.port)
 
 var app = express();
 var redis = require('then-redis');
@@ -32,7 +35,6 @@ app.set('view engine', 'html');
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(__dirname + '/public/favicon.ico'));
-
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -83,7 +85,7 @@ io.on('connection', function (socket) {
     var booked = db.get('*').then(function(obj){
         console.log("get from db : " + obj)
     })
-        socket.emit('appointments', { list:list});
+    socket.emit('appointments', { list:list});
     console.log("connection open " + socket['id'] );
     socket.on('book', function (data) {
         console.log(data.id);
@@ -93,34 +95,31 @@ io.on('connection', function (socket) {
             io.sockets.emit("done", {id: data.id, book: true})
             list.push({id: data.id, book: true})
         })
-
     });
 
-
     jxcore.tasks.addTask(newInstance)
-//http.listen(port++,function(){
-//    console.log("listen to port : " + port + " with socket id : " + socket['id'])
-//})
+
+    //http.listen(port++,function(){
+    //    console.log("listen to port : " + port + " with socket id : " + socket['id'])
+    //})
 
 });
-var newInstance = function(){
-    var port = 3001
-    var newApp=  require('./newApp.js')
-  //  console.log("PORT : " + port)
-    //newApp.listen(port)
-
-
-}
-
+//var port = 3000
 //var listen = function(){
 //    http.listen(port++,function(){
 //        console.log("listen on port : " + port)
 //    })
 //}
+var newInstance = function(){
+    var newApp=  require('newApp.js')
+  //  newApp.listen(port++)
+
+}
 http.listen(port.port,function(){
     port.port = port.port+1
-    console.log("listening to port 3000 ")
+    console.log("listening to port: " + port.port)
 })
+
 var delay = function(){
     var d = when.defer();
     setTimeout(function(){
