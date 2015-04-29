@@ -10,15 +10,10 @@ var db = redis.createClient({
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
+  res.render('index', { title: 'Appointment System' });
 });
-router.get('/getAp',function(req,res){
-    db.get('appointments')
-        .then(function(value){
-            res.render('appointmentList',{
-                list : value
-            })
-        })
+router.get('/appointment.html',function(req,res){
+   res.render('appointment',{title:"Appointment table"});
 })
 
 module.exports = router;

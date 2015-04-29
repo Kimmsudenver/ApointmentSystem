@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head >
+
+    <script src="https://cdn.socket.io/socket.io-1.3.5.js"></script>
+    <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+
+
+</head>
+<body>
+<h2>Appointment system</h2>
+<table class="table table-striped table-bordered">
+    <thead>
+    <td>Date</td>
+    <td>9:00am - 11:00am</td>
+    <td>11:00am - 01:00pm</td>
+    <td>01:00pm - 03:00pm</td>
+    <td>03:00pm - 05:00pm</td>
+    </thead>
+    <tr>
+        <td>Monday</td>
+        <td id="mon1"></td>
+        <td id="mon2"></td>
+        <td id="mon3"></td>
+        <td id="mon4"></td>
+    </tr>
+    <tr>
+        <td>Tuesday</td>
+        <td id="tu1"></td>
+        <td id="tu2"></td>
+        <td id="tu3"></td>
+        <td id="tu4"></td>
+    </tr>
+    <tr>
+        <td>Wednesday</td>
+        <td id="we1"></td>
+        <td id="we2"></td>
+        <td id="we3"></td>
+        <td id="we4"></td>
+    </tr>
+    <tr>
+        <td>Thursday</td>
+        <td id="thu1"></td>
+        <td id="thu2"></td>
+        <td id="thu3"></td>
+        <td id="thu4"></td>
+    </tr>
+    <tr>
+        <td>Friday</td>
+        <td id="fri1"></td>
+        <td id="fri2"></td>
+        <td id="fri3"></td>
+        <td id="fri4"></td>
+    </tr>
+
+</table>
+<script>
+    var socket = io.connect('http://localhost:3000');
+    console.log(socket)
+
+    $('tr td').each(function(){
+        var ids = $(this).attr("id")
+        if(ids) {
+            $(this).append("<span><button class= 'btn btn-default "+ids+"'>book now</button></span>")
+        }
+        $(this).find("button").click(function(){
+            console.log($(this).html())
+            if($(this).html()=="book now") {
+
+                socket.emit("book", {"id": ids})
+            }
+            else{
+                //dont do anything
+            }
+        })
+
+
+    });
+    socket.on('appointments', function (data) {
+        //update buttons
+        $('tr td').each(function() {
+            var idt = $(this).attr('id')
+            //console.log("data : " + JSON.stringify(data) + "id : " + idt)
+            for(item in data.list){
+                //  console.log(data.list[item].id)
+                if(data.list[item].id == idt){
+                    console.log("EQUAL here" )
+                    $('td#'+idt).remove('button').addClass("danger").text("Unavailable")
+                }
+            }
+        })
+
+    })
+    socket.on("pending",function(data){//form of data : {"id":id,"book":true}
+        console.log(data)
+        $('td button.' + data.id).removeClass("btn btn-danger").addClass("btn btn-default").text("pending")
+        socket.emit("donePending",{id:data.id,socketId:socket.ids})
+    });
+    socket.on("done",function(data){//form of data : {"id":id,"book":true}
+
+        $('td#'+data.id).remove('button').addClass("danger").text("Unavailable")
+    });
+
+
+
+
+
+
+
+
+
+</script>
+</body>
+</html>

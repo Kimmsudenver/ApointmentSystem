@@ -10,7 +10,8 @@ var bodyParser = require('body-parser');
 var routes = require('./routes/index');
 var users = require('./routes/users');
 var port = require('./port')
-console.log("GLOBAL PORT : " + port.port)
+jxcore.tasks.setThreadCount(3)
+
 
 var app = express();
 var redis = require('then-redis');
@@ -70,6 +71,8 @@ app.use(function(err, req, res, next) {
     res.render('error');
 });
 
+
+
 var http = require('http').Server(app);
 
 //http.Server(app);
@@ -95,32 +98,33 @@ io.on('connection', function (socket) {
         })
 
     });
+    socket.on("newConnection",function(data){
+        jxcore.tasks.addTask(newInstance)
+    })
 
 
-    jxcore.tasks.addTask(newInstance)
+   // jxcore.tasks.addTask(newInstance)
 //http.listen(port++,function(){
 //    console.log("listen to port : " + port + " with socket id : " + socket['id'])
 //})
 
 });
+io.on('disconnect',function(){
+    console.log("disconnected")
+})
+http.listen(3000,function(){
+//    console.log("hello from thread : " + process.threadId)
+
+})
 var newInstance = function(){
-    var port = 3001
+    global.portNum = global.portNum+1
     var newApp=  require('./newApp.js')
-  //  console.log("PORT : " + port)
-    //newApp.listen(port)
+   // console.log("hello from thread : " + process.threadId)
 
 
 }
 
-//var listen = function(){
-//    http.listen(port++,function(){
-//        console.log("listen on port : " + port)
-//    })
-//}
-http.listen(port.port,function(){
-    port.port = port.port+1
-    console.log("listening to port 3000 ")
-})
+//jxcore.tasks.addTask(newInstance)
 var delay = function(){
     var d = when.defer();
     setTimeout(function(){

@@ -17,8 +17,8 @@
 </head>
 <body>
 <h2>Appointment system</h2>
-<button class="btn btn-primary" id="request"></button>
-<table class="table table-striped table-bordered">
+<a href="appointment.html"><button class="btn btn-primary" id="request">Request connection</button></a>
+<!--<table class="table table-striped table-bordered">
     <thead>
        <td>Date</td>
         <td>9:00am - 11:00am</td>
@@ -118,6 +118,12 @@
 
 
 
+</script>-->
+<script>
+    var socket = io.connect('http://localhost:3000');
+    $('#request').click(function(){
+        socket.emit("newConnection")
+    })
 </script>
 </body>
 </html>

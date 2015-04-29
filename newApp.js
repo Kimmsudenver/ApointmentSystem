@@ -19,6 +19,7 @@ var app = express();
 var redis = require('then-redis');
 
 
+
 var db = redis.createClient({
     host: 'localhost',
     port: 6379
@@ -82,6 +83,7 @@ var count=0
 //console.log("Server running at http://127.0.0.1:1337 on thread number " + process.threadId)
 
 io.on('connection', function (socket) {
+   // console.log("hello from thread : " + process.threadId)
     var booked = db.get('*').then(function(obj){
         console.log("get from db : " + obj)
     })
@@ -96,29 +98,34 @@ io.on('connection', function (socket) {
             list.push({id: data.id, book: true})
         })
     });
-
-    jxcore.tasks.addTask(newInstance)
-
-    //http.listen(port++,function(){
-    //    console.log("listen to port : " + port + " with socket id : " + socket['id'])
+    //socket.on("newConnection",function(data){
+    //    jxcore.tasks.addTask(newInstance)
     //})
 
+
+
 });
+http.listen(global.portNum,function() {
+    global.portNum = global.portNum+1
+    console.log("listen to port : " + global.portNum )
+    console.log("hello from thread : " + process.threadId)
+})
+io.on('disconnect',function(){
+    console.log("disconnected")
+})
 //var port = 3000
 //var listen = function(){
 //    http.listen(port++,function(){
 //        console.log("listen on port : " + port)
 //    })
 //}
+
 var newInstance = function(){
     var newApp=  require('newApp.js')
   //  newApp.listen(port++)
 
 }
-http.listen(port.port,function(){
-    port.port = port.port+1
-    console.log("listening to port: " + port.port)
-})
+//jxcore.tasks.addTask(newInstance)
 
 var delay = function(){
     var d = when.defer();

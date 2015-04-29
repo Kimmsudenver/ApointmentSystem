@@ -3,3 +3,5 @@
  */
 var portNum = 3000
 exports.port = portNum
+global.portNum = portNum
+global.thread = 1;
